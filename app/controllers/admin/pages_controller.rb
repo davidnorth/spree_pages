@@ -1,15 +1,15 @@
 class Admin::PagesController < Admin::ResourceController
-  
+
   cache_sweeper PageSweeper, :only => [ :edit, :update, :destroy ]
-  
+
   def index
-    @pages = Page.paginate(:per_page => 50, :page => params[:page])
+    # @pages = Page.paginate(:per_page => 50, :page => params[:page])
   end
-  
+
   def new
     @page = Page.new
   end
-  
+
   def create
     @page = Page.new(params[:page])
     if @page.save
@@ -19,11 +19,11 @@ class Admin::PagesController < Admin::ResourceController
       render :action => 'new'
     end
   end
-  
+
   def edit
     @page = Page.find(params[:id])
   end
-  
+
   def update
     @page = Page.find(params[:id])
     if @page.update_attributes(params[:page])
@@ -33,11 +33,18 @@ class Admin::PagesController < Admin::ResourceController
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     @page = Page.find(params[:id])
     @page.destroy
     flash[:notice] = "Successfully destroyed page."
     redirect_to admin_pages_url
   end
+
+  private
+
+  def collection
+    super.page(params[:page])
+  end
+
 end
